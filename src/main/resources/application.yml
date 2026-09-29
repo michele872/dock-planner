@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: dock-planner
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/dockplanner}
+    username: ${DB_USER:dockplanner}
+    password: ${DB_PASSWORD:dockplanner}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
