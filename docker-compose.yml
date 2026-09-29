@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: dockplanner
+      POSTGRES_USER: dockplanner
+      POSTGRES_PASSWORD: dockplanner
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      # Check over TCP: on first start the image runs a temporary socket-only server.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U dockplanner -d dockplanner"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    ports:
+      - "8081:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/dockplanner
+      DB_USER: dockplanner
+      DB_PASSWORD: dockplanner
+      SPRING_PROFILES_ACTIVE: demo
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
